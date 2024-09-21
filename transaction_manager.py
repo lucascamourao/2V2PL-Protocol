@@ -10,14 +10,25 @@ class TransactionManager:
         self.active_transactions[transaction_id] = {'status': 'active'}
 
     def process(self, transaction_id, operation, resource, lock_manager):
-        # Aqui, gerencie a lógica para processar cada operação (R, W) em um recurso
+        # Aqui, gerencie a lógica para processar cada operação (R, W, U, C, IR, IW, IU, IC) em um recurso
         print(f"Processing {operation} on {resource} by {transaction_id}")
-        
         # Adquirir o lock necessário
         if operation == 'R':
             return lock_manager.acquire_shared_lock(transaction_id, resource)
         elif operation == 'W':
             return lock_manager.acquire_exclusive_lock(transaction_id, resource)
+        elif operation == 'U':
+            return lock_manager.acquire_update_lock(transaction_id, resource)
+        elif operation == 'C':
+            return lock_manager.acquire_certify_lock(transaction_id, resource)
+        elif operation == 'IR':
+            return lock_manager.acquire_intent_read_lock(transaction_id, resource)
+        elif operation == 'IW':
+            return lock_manager.acquire_intent_write_lock(transaction_id, resource)
+        elif operation == 'IU':
+            return lock_manager.acquire_intent_update_lock(transaction_id, resource)
+        elif operation == 'IC':
+            return lock_manager.acquire_intent_certify_lock(transaction_id, resource)
 
     def commit_transaction(self, transaction_id):
         print(f"Committing transaction {transaction_id}")
