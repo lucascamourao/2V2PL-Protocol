@@ -5,10 +5,10 @@ class DeadlockDetection:
         self.wait_grafo = {} #'T1': ['T2', 'T3', 'T4'] == T1->T2, T1->T3, T1->T4
         self.past = []
 
-    def add_wait(espera, esperado):
+    def add_wait(self, espera, esperado):
         print("")
 
-    def detect_deadlock():
+    def detect_deadlock(self, no, prox):
         # Implementar a lógica de construção do grafo de espera
         # e detecção de ciclos para identificar deadlocks
         print("Detecting deadlock...")
