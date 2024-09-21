@@ -9,12 +9,12 @@ lock_manager = LockManager()
 def main():
     # Exemplo de escalonamento: T1: R(A), W(A), T2: R(B), W(B), ...
     schedule = [
-        ('T1', 'R', 'A'), 
-        ('T1', 'W', 'A'), 
-        ('T2', 'R', 'B'), 
-        ('T2', 'W', 'B'), 
-        ('T3', 'R', 'A'), 
-        ('T3', 'W', 'B')
+        ['T1', 'R', 'A'], 
+        ['T1', 'W', 'A'], 
+        ['T2', 'R', 'B'], 
+        ['T2', 'W', 'B'], 
+        ['T3', 'R', 'A'], 
+        ['T3', 'W', 'B']
     ]
 
     # Processar o escalonamento
