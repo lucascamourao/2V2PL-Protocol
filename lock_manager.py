@@ -1,0 +1,1 @@
+# Manipulação de locks, criação de locks de múltipla granularidade

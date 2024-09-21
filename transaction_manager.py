@@ -1,0 +1,1 @@
+# Gerenciamento de transações (start, commit, abort)
