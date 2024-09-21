@@ -1,10 +1,11 @@
 # Funções para detecção de deadlocks (grafo de espera) 
 
 class DeadlockDetection:
-    def __init__(self, schedule):
+    def __init__(self):
         self.wait_grafo = {} #'T1': ['T2', 'T3', 'T4'] == T1->T2, T1->T3, T1->T4
         self.past = []
 
+    def start_grafo(self, schedule):
         for transaction in schedule:
             self.wait_grafo[transaction[0]] = []
 
@@ -24,5 +25,11 @@ class DeadlockDetection:
             if self.detect_deadlock(i, self.wait_grafo[i], past):
                 return True
         return False
+    
+    def recent_transaction(self):
+        for transaction in self.wait_grafo.keys():
+            if transaction in self.past:
+                recent = transaction
+        return recent
     
 # Se existir, retornar a transação a ser abortada
