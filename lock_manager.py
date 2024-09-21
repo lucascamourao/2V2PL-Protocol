@@ -101,7 +101,7 @@ class LockManager:
                 print(f"Lock {new_lock_type} não é compatível com {existing_lock_type} no recurso {resource}")
                 
                 # Chama a função add_wait passando as transações em conflito
-                deadlock_detection.add_wait(existing_transaction_id, transaction_id)
+                deadlock_manager.add_wait(existing_transaction_id, transaction_id)
                 return False
             
         return True
