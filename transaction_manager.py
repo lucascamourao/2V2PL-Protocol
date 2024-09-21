@@ -9,7 +9,7 @@ class TransactionManager:
         print(f"Starting transaction {transaction_id}")
         self.active_transactions[transaction_id] = {'status': 'active'}
 
-    def process(self, transaction_id, operation, resource, lock_manager):
+    def process(self, transaction_id, operation, resource, lock_manager, deadlock_manager):
         # Aqui, gerencie a lógica para processar cada operação (R, W, U, C, IR, IW, IU, IC) em um recurso
         print(f"Processing {operation} on {resource} by {transaction_id}")
         # Adquirir o lock necessário
