@@ -1,5 +1,6 @@
 # Funções utilitárias
 
+# supondo que cada transação tem 3 operações
 def parse_schedule(input_str):
     parsed_schedule = []
 
