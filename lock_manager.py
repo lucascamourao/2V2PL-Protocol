@@ -2,6 +2,7 @@
 
 class LockManager:
     def __init__(self):
+        print("A LockManager has been created. \n")
         # Armazena os locks para cada recurso
         self.locks = {}
 

@@ -3,7 +3,7 @@
 def detect_deadlock():
     # Implementar a lógica de construção do grafo de espera
     # e detecção de ciclos para identificar deadlocks
-    print("Detectando deadlock...")
+    print("Detecting deadlock...")
     
     # Verificar se existe ciclo no grafo de espera
     # Se existir, retornar a transação a ser abortada
