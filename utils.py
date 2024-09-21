@@ -13,3 +13,14 @@ def parse_schedule(input_str):
     # Exemplo de input: "T1: R(A), W(A); T2: R(B), W(B)"
     # Saída: [('T1', 'R', 'A'), ('T1', 'W', 'A'), ('T2', 'R', 'B'), ('T2', 'W', 'B')]
     return parsed_schedule
+
+'''
+Seja S uma string, 
+
+S[0] é a transação. Ex: 'T1'
+
+S[1] é a operação. Ex: 'R'.
+
+S[2] é o recurso (onde será aplicada a operação). Ex: 'A'.
+
+'''
