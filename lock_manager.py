@@ -5,94 +5,105 @@ class LockManager:
         self.locks = {}
         # Armazena as tentativas de aquisição de locks
         self.lock_attempts = {}
+        # Pega a matriz com as comparações
         self.lock_compatibility_matrix = LockCompatibilityMatrix()
 
     def acquire_shared_lock(self, transaction_id, resource):
         print(f"{transaction_id} tentando adquirir lock compartilhado (leitura) em {resource}")
-        if not self.is_lock_compatible(transaction_id, 'rlj', resource):
-            self.add_lock_attempt(transaction_id, 'rlj', resource, success=False)
+        if not self.is_lock_compatible(transaction_id, 'R', resource):
+            self.add_lock_attempt(transaction_id, 'R', resource, success=False)
             return False
-        self.add_lock(transaction_id, 'rlj', resource)
-        self.add_lock_attempt(transaction_id, 'rlj', resource, success=True)
+        self.add_lock(transaction_id, 'R', resource)
+        self.add_lock_attempt(transaction_id, 'R', resource, success=True)
         return True
 
     def acquire_exclusive_lock(self, transaction_id, resource):
         print(f"{transaction_id} tentando adquirir lock exclusivo (escrita) em {resource}")
-        if not self.is_lock_compatible(transaction_id, 'wlj', resource):
-            self.add_lock_attempt(transaction_id, 'wlj', resource, success=False)
+        if not self.is_lock_compatible(transaction_id, 'W', resource):
+            self.add_lock_attempt(transaction_id, 'W', resource, success=False)
             return False
-        self.add_lock(transaction_id, 'wlj', resource)
-        self.add_lock_attempt(transaction_id, 'wlj', resource, success=True)
+        self.add_lock(transaction_id, 'W', resource)
+        self.add_lock_attempt(transaction_id, 'W', resource, success=True)
         return True
 
     def acquire_intent_read_lock(self, transaction_id, resource):
         print(f"{transaction_id} tentando adquirir lock intencional de leitura em {resource}")
-        if not self.is_lock_compatible(transaction_id, 'irlj', resource):
-            self.add_lock_attempt(transaction_id, 'irlj', resource, success=False)
+        if not self.is_lock_compatible(transaction_id, 'IR', resource):
+            self.add_lock_attempt(transaction_id, 'IR', resource, success=False)
             return False
-        self.add_lock(transaction_id, 'irlj', resource)
-        self.add_lock_attempt(transaction_id, 'irlj', resource, success=True)
+        self.add_lock(transaction_id, 'IR', resource)
+        self.add_lock_attempt(transaction_id, 'IR', resource, success=True)
         return True
 
     def acquire_intent_write_lock(self, transaction_id, resource):
         print(f"{transaction_id} tentando adquirir lock intencional de escrita em {resource}")
-        if not self.is_lock_compatible(transaction_id, 'iwlj', resource):
-            self.add_lock_attempt(transaction_id, 'iwlj', resource, success=False)
+        if not self.is_lock_compatible(transaction_id, 'IW', resource):
+            self.add_lock_attempt(transaction_id, 'IW', resource, success=False)
             return False
-        self.add_lock(transaction_id, 'iwlj', resource)
-        self.add_lock_attempt(transaction_id, 'iwlj', resource, success=True)
+        self.add_lock(transaction_id, 'IW', resource)
+        self.add_lock_attempt(transaction_id, 'IW', resource, success=True)
         return True
 
     def acquire_update_lock(self, transaction_id, resource):
         print(f"{transaction_id} tentando adquirir lock de update em {resource}")
-        if not self.is_lock_compatible(transaction_id, 'ulj', resource):
-            self.add_lock_attempt(transaction_id, 'ulj', resource, success=False)
+        if not self.is_lock_compatible(transaction_id, 'U', resource):
+            self.add_lock_attempt(transaction_id, 'U', resource, success=False)
             return False
-        self.add_lock(transaction_id, 'ulj', resource)
-        self.add_lock_attempt(transaction_id, 'ulj', resource, success=True)
+        self.add_lock(transaction_id, 'U', resource)
+        self.add_lock_attempt(transaction_id, 'U', resource, success=True)
         return True
 
     def acquire_certify_lock(self, transaction_id, resource):
         print(f"{transaction_id} tentando adquirir lock de certificação em {resource}")
-        if not self.is_lock_compatible(transaction_id, 'clj', resource):
-            self.add_lock_attempt(transaction_id, 'clj', resource, success=False)
+        if not self.is_lock_compatible(transaction_id, 'C', resource):
+            self.add_lock_attempt(transaction_id, 'C', resource, success=False)
             return False
-        self.add_lock(transaction_id, 'clj', resource)
-        self.add_lock_attempt(transaction_id, 'clj', resource, success=True)
+        self.add_lock(transaction_id, 'C', resource)
+        self.add_lock_attempt(transaction_id, 'C', resource, success=True)
         return True
 
     def acquire_intent_update_lock(self, transaction_id, resource):
         print(f"{transaction_id} tentando adquirir lock intencional de update em {resource}")
-        if not self.is_lock_compatible(transaction_id, 'iulj', resource):
-            self.add_lock_attempt(transaction_id, 'iulj', resource, success=False)
+        if not self.is_lock_compatible(transaction_id, 'IU', resource):
+            self.add_lock_attempt(transaction_id, 'IU', resource, success=False)
             return False
-        self.add_lock(transaction_id, 'iulj', resource)
-        self.add_lock_attempt(transaction_id, 'iulj', resource, success=True)
+        self.add_lock(transaction_id, 'IU', resource)
+        self.add_lock_attempt(transaction_id, 'IU', resource, success=True)
         return True
 
     def acquire_intent_certify_lock(self, transaction_id, resource):
         print(f"{transaction_id} tentando adquirir lock intencional de Certify em {resource}")
-        if not self.is_lock_compatible(transaction_id, 'iclj', resource):
-            self.add_lock_attempt(transaction_id, 'iclj', resource, success=False)
+        if not self.is_lock_compatible(transaction_id, 'IC', resource):
+            self.add_lock_attempt(transaction_id, 'IC', resource, success=False)
             return False
-        self.add_lock(transaction_id, 'iclj', resource)
-        self.add_lock_attempt(transaction_id, 'iclj', resource, success=True)
+        self.add_lock(transaction_id, 'IC', resource)
+        self.add_lock_attempt(transaction_id, 'IC', resource, success=True)
         return True
 
     def add_lock(self, transaction_id, lock_type, resource):
-        """ Adiciona o lock ao recurso """
+        """ Adiciona o lock ao recurso no formato (transaction_id, lock_type) """
         if resource not in self.locks:
             self.locks[resource] = []
-        self.locks[resource].append({'transaction_id': transaction_id, 'type': lock_type})
+        self.locks[resource].append((transaction_id, lock_type))
         print(f"Lock {lock_type} adquirido pela transação {transaction_id} no recurso {resource}")
 
     def is_lock_compatible(self, transaction_id, new_lock_type, resource):
         """ Verifica se o lock que está sendo requisitado é compatível com os locks existentes """
         existing_locks = self.locks.get(resource, [])
         for lock in existing_locks:
-            if not self.lock_compatibility_matrix.is_compatible(new_lock_type, lock['type']):
-                print(f"Lock {new_lock_type} não é compatível com {lock['type']} no recurso {resource}")
+            existing_transaction_id, existing_lock_type = lock
+            
+            # Exceção: Não verificar conflito se a mesma transação está tentando adquirir o lock
+            if existing_transaction_id == transaction_id:
+                continue
+            
+            if not self.lock_compatibility_matrix.is_compatible(new_lock_type, existing_lock_type):
+                print(f"Lock {new_lock_type} não é compatível com {existing_lock_type} no recurso {resource}")
+                
+                # Chama a função add_wait passando as transações em conflito
+                deadlock_detection.add_wait(existing_transaction_id, transaction_id)
                 return False
+            
         return True
 
     def add_lock_attempt(self, transaction_id, lock_type, resource, success):
@@ -100,11 +111,7 @@ class LockManager:
         if resource not in self.lock_attempts:
             self.lock_attempts[resource] = []
 
-        if success:
-            status = 1
-        else:
-            status = 2
-
+        status = 1 if success else 2
         self.lock_attempts[resource].append((transaction_id, lock_type, status))
 
     def plot_lock_attempts(self, resource):
@@ -123,14 +130,14 @@ class LockManager:
 class LockCompatibilityMatrix:
     def __init__(self):
         self.matrix = {
-            'rlj': {'rli': True, 'wli': True, 'cli': False, 'uli': False, 'irli': True, 'iwli': True, 'iuli': False, 'icli': False},
-            'wlj': {'rli': True, 'wli': False, 'cli': False, 'uli': False, 'irli': True, 'iwli': False, 'iuli': False, 'icli': False},
-            'clj': {'rli': False, 'wli': False, 'cli': False, 'uli': False, 'irli': False, 'iwli': False, 'iuli': False, 'icli': False},
-            'ulj': {'rli': True, 'wli': False, 'cli': False, 'uli': False, 'irli': True, 'iwli': False, 'iuli': False, 'icli': False},
-            'irlj': {'rli': True, 'wli': True, 'cli': False, 'uli': False, 'irli': True, 'iwli': True, 'iuli': True, 'icli': True},
-            'iwlj': {'rli': True, 'wli': False, 'cli': False, 'uli': False, 'irli': True, 'iwli': True, 'iuli': True, 'icli': True},
-            'iulj': {'rli': True, 'wli': False, 'cli': False, 'uli': False, 'irli': True, 'iwli': True, 'iuli': True, 'icli': True},
-            'iclj': {'rli': False, 'wli': False, 'cli': False, 'uli': False, 'irli': True, 'iwli': True, 'iuli': True, 'icli': True}
+            'R': {'R': True, 'W': True, 'C': False, 'U': False, 'IR': True, 'IW': True, 'IU': False, 'IC': False},
+            'W': {'R': True, 'W': False, 'C': False, 'U': False, 'IR': True, 'IW': False, 'IU': False, 'IC': False},
+            'C': {'R': False, 'W': False, 'C': False, 'U': False, 'IR': False, 'IW': False, 'IU': False, 'IC': False},
+            'U': {'R': True, 'W': False, 'C': False, 'U': False, 'IR': True, 'IW': False, 'IU': False, 'IC': False},
+            'IR': {'R': True, 'W': True, 'C': False, 'U': False, 'IR': True, 'IW': True, 'IU': True, 'IC': True},
+            'IW': {'R': True, 'W': False, 'C': False, 'U': False, 'IR': True, 'IW': True, 'IU': True, 'IC': True},
+            'IU': {'R': True, 'W': False, 'C': False, 'U': False, 'IR': True, 'IW': True, 'IU': True, 'IC': True},
+            'IC': {'R': False, 'W': False, 'C': False, 'U': False, 'IR': True, 'IW': True, 'IU': True, 'IC': True}
         }
 
     def is_compatible(self, new_lock, existing_lock):
