@@ -28,7 +28,7 @@ def main():
     transaction_manager.start_processing(schedule, lock_manager, deadlock_manager)
 
     lock_manager.display_locks()
-    lock_manager.display_lock_attempts()
+    lock_manager.display_lock_attempts() 
 
 
 if __name__ == "__main__":
