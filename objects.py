@@ -1,0 +1,33 @@
+class Objects:
+    def __init__(self, parent_id, id):
+        self.id = id
+        self.root = self
+        self.parent_id = parent_id
+        self.children_tree = []
+    
+    def new_object(self, parent_id, object_id):
+        object = Objects(parent_id, object_id)
+        object.root = self
+        parent = self.search_parent(parent_id)
+        parent.children_tree.append(object)
+        print(f'{object_id} criado com sucesso')
+
+    def search_parent(self, parent_id):
+        if self.id == parent_id:
+            return self
+        for children in self.children_tree:
+            return children.search_parent(parent_id)
+
+    def all_children(self):
+        all_children = []
+        for children in self.children_tree:
+            all_children.append(children.id)
+            all_children = all_children + children.all_children()
+        return all_children
+    
+    def all_parents(self):
+        all_parents = []
+        if self.parent_id == None:
+            return all_parents.append(self.id)
+        all_parents = self.root.search_parent(self.parent_id).all_parents() + all_parents.append(self.parent_id)
+        return all_parents
