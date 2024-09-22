@@ -13,7 +13,7 @@ class TransactionManager:
         for [transaction_id, operation, resource] in schedule:
             self.process(transaction_id, operation, resource, lock_manager, deadlock_manager)
 
-    def process(self, transaction_id, operation, resource, lock_manager, deadlock_manager):
+    def process(self, transaction_id, operation, resource, lock_manager, deadlock_manager, transaction_manager, lock_manager, schedule):
         # Aqui, gerencie a lógica para processar cada operação (R, W, U, C, IR, IW, IU, IC) em um recurso
         print(f"Processing {operation} on {resource} by {transaction_id}")
         # Adquirir o lock necessário
@@ -38,6 +38,12 @@ class TransactionManager:
         print(f"Committing transaction {transaction_id}")
         self.active_transactions.pop(transaction_id, None)
 
-    def abort_transaction(self, transaction_id):
+    def abort_transaction(self, transaction_id, schedule):
         print(f"Aborting transaction {transaction_id}")
         self.active_transactions.pop(transaction_id, None)
+        
+        for i in range(len(schedule)):
+            if schedule[i][0] == transaction_id:
+                schedule[i] = None
+
+        return [op for op in schedule if op is not None]
