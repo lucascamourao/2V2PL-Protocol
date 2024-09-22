@@ -28,7 +28,10 @@ def main():
     transaction_manager.start_processing(schedule, lock_manager, deadlock_manager)
 
     lock_manager.display_locks()
-    lock_manager.display_lock_attempts() 
+    lock_manager.display_lock_attempts()
+
+    if deadlock_manager.detect_deadlock('T1', deadlock_manager.wait_grafo['T1'], []):
+        print(deadlock_manager.recent_transaction())
 
 
 if __name__ == "__main__":
