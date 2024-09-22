@@ -18,14 +18,7 @@ class TransactionManager:
                 transaction_id = element[0]
                 operation = element[1]
                 resource = element[2]
-                self.process(
-                    transaction_id,
-                    operation,
-                    resource,
-                    lock_manager,
-                    deadlock_manager,
-                    schedule,
-                )
+                self.process(transaction_id,operation,resource,lock_manager,deadlock_manager,schedule)
 
     def process(self, transaction_id, operation, resource, lock_manager, deadlock_manager, schedule):
         # Aqui, gerencie a lógica para processar cada operação (R, W, U, C, IR, IW, IU, IC) em um recurso

@@ -15,7 +15,6 @@ class DeadlockDetection:
         if esperado not in aux:
             aux.append(esperado)
         self.wait_grafo[espera] = aux
-
         print(f"add_wait chamado: {espera} agora espera por {esperado}")
 
     def detect_deadlock(self, no, prox, past):
