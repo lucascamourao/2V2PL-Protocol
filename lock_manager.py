@@ -85,7 +85,8 @@ class LockManager:
         if resource not in self.locks:
             self.locks[resource] = []
         self.locks[resource].append((transaction_id, lock_type))
-        print(f"Lock {lock_type} adquirido pela transação {transaction_id} no recurso {resource}")
+        print(f"Lock {lock_type} adquirido pela Transacao {transaction_id} no recurso {resource}")
+        print(f"--------------------------------------------------------------------------------")
 
     def is_lock_compatible(self, transaction_id, new_lock_type, resource, deadlock_manager):
         """ Verifica se o lock que está sendo requisitado é compatível com os locks existentes """
@@ -98,7 +99,8 @@ class LockManager:
                 continue
             
             if not self.lock_compatibility_matrix.is_compatible(new_lock_type, existing_lock_type):
-                print(f"Lock {new_lock_type} não é compatível com {existing_lock_type} no recurso {resource}")
+                print(f"Lock {new_lock_type} nao eh compativel com {existing_lock_type} no recurso {resource}")
+                print(f"-------------------------------------------------------------------------------------")
                 
                 # Chama a função add_wait passando as transações em conflito
                 deadlock_manager.add_wait(existing_transaction_id, transaction_id)
@@ -125,7 +127,32 @@ class LockManager:
         for attempt in attempts:
             transaction_id, lock_type, status = attempt
             status_str = 'Sucesso' if status == 1 else 'Falha'
-            print(f"Transação {transaction_id} tentou {lock_type} -> {status_str}")
+            print(f"Transacao {transaction_id} tentou {lock_type} -> {status_str}")
+
+    def display_locks(self):
+        """ Exibe todos os locks atualmente adquiridos em cada recurso """
+        if not self.locks:
+            print("Nenhum lock foi adquirido.")
+        else:
+            print("Locks adquiridos:")
+            for resource, lock_list in self.locks.items():
+                print(f"Recurso {resource}:")
+                for transaction_id, lock_type in lock_list:
+                    print(f"  Transacao {transaction_id} -> Tipo de lock: {lock_type}")
+
+    def display_lock_attempts(self):
+        """ Exibe todas as tentativas de aquisição de locks para todos os recursos """
+        if not self.lock_attempts:
+            print("Nenhuma tentativa de lock foi registrada.")
+        else:
+            print("Tentativas de lock registradas:")
+            for resource, attempts in self.lock_attempts.items():
+                print(f"Recurso {resource}:")
+                for attempt in attempts:
+                    transaction_id, lock_type, status = attempt
+                    status_str = 'Sucesso' if status == 1 else 'Falha'
+                    print(f"  Transacao {transaction_id} tentou {lock_type} -> {status_str}")
+
 
 class LockCompatibilityMatrix:
     def __init__(self):

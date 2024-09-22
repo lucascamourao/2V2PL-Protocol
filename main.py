@@ -13,15 +13,21 @@ def main():
         ['T1', 'R', 'A'], 
         ['T1', 'W', 'A'], 
         ['T2', 'R', 'B'], 
-        ['T2', 'W', 'B'], 
+        ['T3', 'W', 'B'], 
         ['T3', 'R', 'A'], 
-        ['T3', 'W', 'B']
+        ['T2', 'W', 'B'],
+        ['T2', 'W', 'C'],
+        ['T1', 'W', 'C'],
+        ['T3', 'W', 'A'], 
     ]
 
     deadlock_manager.start_grafo(schedule)
 
     # Processar o escalonamento
     transaction_manager.start_processing(schedule, lock_manager, deadlock_manager)
+
+    lock_manager.display_locks()
+    lock_manager.display_lock_attempts()
 
 if __name__ == '__main__':
     main()
