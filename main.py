@@ -21,10 +21,7 @@ def main():
     deadlock_manager.start_grafo(schedule)
 
     # Processar o escalonamento
-    for [transaction, operation, resource] in schedule:
-        if not transaction_manager.process(transaction, operation, resource, lock_manager, deadlock_manager):
-            print(f"Deadlock detected during {transaction}'s operation on {resource}.")
-            break
+    transaction_manager.start_processing(schedule, lock_manager, deadlock_manager)
 
 if __name__ == '__main__':
     main()
