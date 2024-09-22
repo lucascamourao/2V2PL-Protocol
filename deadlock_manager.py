@@ -18,6 +18,9 @@ class DeadlockDetection:
 
         print(f"add_wait chamado: {espera} agora espera por {esperado}")
     
+    def apagar_grafo(self):
+        self.wait_grafo.clear()
+            
     def detect_deadlock(self, no, prox, past):
         if no in past:
             self.past = past
