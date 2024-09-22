@@ -8,22 +8,58 @@ class LockManager:
         # Pega a matriz com as comparações
         self.lock_compatibility_matrix = LockCompatibilityMatrix()
 
-    def acquire_shared_lock(self, transaction_id, resource, deadlock_manager):
+    def acquire_shared_lock(
+        self,
+        transaction_id,
+        resource,
+        deadlock_manager,
+        abort_transaction,
+        schedule,
+        lock_manager,
+        start_processing,
+    ):
         print(
             f"{transaction_id} tentando adquirir lock compartilhado (leitura) em {resource}"
         )
-        if not self.is_lock_compatible(transaction_id, "R", resource, deadlock_manager):
+        if not self.is_lock_compatible(
+            transaction_id,
+            "R",
+            resource,
+            deadlock_manager,
+            abort_transaction,
+            schedule,
+            lock_manager,
+            start_processing,
+        ):
             self.add_lock_attempt(transaction_id, "R", resource, success=False)
             return False
         self.add_lock(transaction_id, "R", resource)
         self.add_lock_attempt(transaction_id, "R", resource, success=True)
         return True
 
-    def acquire_exclusive_lock(self, transaction_id, resource, deadlock_manager):
+    def acquire_exclusive_lock(
+        self,
+        transaction_id,
+        resource,
+        deadlock_manager,
+        abort_transaction,
+        schedule,
+        lock_manager,
+        start_processing,
+    ):
         print(
             f"{transaction_id} tentando adquirir lock exclusivo (escrita) em {resource}"
         )
-        if not self.is_lock_compatible(transaction_id, "W", resource, deadlock_manager):
+        if not self.is_lock_compatible(
+            transaction_id,
+            "W",
+            resource,
+            deadlock_manager,
+            abort_transaction,
+            schedule,
+            lock_manager,
+            start_processing,
+        ):
             self.add_lock_attempt(transaction_id, "W", resource, success=False)
             return False
         self.add_lock(transaction_id, "W", resource)
@@ -113,7 +149,15 @@ class LockManager:
         )
 
     def is_lock_compatible(
-        self, transaction_id, new_lock_type, resource, deadlock_manager
+        self,
+        transaction_id,
+        new_lock_type,
+        resource,
+        deadlock_manager,
+        abort_transaction,
+        schedule,
+        lock_manager,
+        start_processing,
     ):
         """Verifica se o lock que está sendo requisitado é compatível com os locks existentes"""
         existing_locks = self.locks.get(resource, [])
@@ -135,10 +179,41 @@ class LockManager:
                 )
 
                 # Chama a função add_wait passando as transações em conflito
+
                 deadlock_manager.add_wait(existing_transaction_id, transaction_id)
+
+                if deadlock_manager.detect_deadlock(
+                    existing_transaction_id,
+                    deadlock_manager.wait_grafo[existing_transaction_id],
+                    [],
+                ):
+
+                    self.reset_locks()
+                    transaction_recent_abort = deadlock_manager.recent_transaction()
+
+                    # Reiniciar o processamento do escalonamento ajustado
+                    print(
+                        f"Reiniciando o escalonamento após o aborto da transação {transaction_recent_abort}"
+                    )
+
+                    new_schedule = abort_transaction(
+                        transaction_recent_abort,
+                        schedule,
+                        lock_manager,
+                        deadlock_manager,
+                    )
+
+                    deadlock_manager.apagar_grafo()
+
+                    start_processing(new_schedule, lock_manager, deadlock_manager)
+
                 return False
 
         return True
+
+    def reset_locks(self):
+        self.locks = {}
+        self.lock_attempts = {}
 
     def add_lock_attempt(self, transaction_id, lock_type, resource, success):
         """Registra a tentativa de aquisição de um lock, com o resultado (1 para sucesso, 2 para falha)"""
