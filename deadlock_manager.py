@@ -18,7 +18,6 @@ class DeadlockDetection:
         print(f"add_wait chamado: {espera} agora espera por {esperado}")
 
     def detect_deadlock(self, no, prox, past):
-        print("Detecting deadlock...")
         if no in past:
             self.past = past
             return True
