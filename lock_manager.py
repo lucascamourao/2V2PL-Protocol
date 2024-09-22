@@ -13,10 +13,8 @@ class LockManager:
         transaction_id,
         resource,
         deadlock_manager,
-        abort_transaction,
-        schedule,
         lock_manager,
-        start_processing,
+        schedule,
     ):
         print(
             f"{transaction_id} tentando adquirir lock compartilhado (leitura) em {resource}"
@@ -26,10 +24,8 @@ class LockManager:
             "R",
             resource,
             deadlock_manager,
-            abort_transaction,
-            schedule,
             lock_manager,
-            start_processing,
+            schedule,
         ):
             self.add_lock_attempt(transaction_id, "R", resource, success=False)
             return False
@@ -42,10 +38,8 @@ class LockManager:
         transaction_id,
         resource,
         deadlock_manager,
-        abort_transaction,
-        schedule,
         lock_manager,
-        start_processing,
+        schedule,
     ):
         print(
             f"{transaction_id} tentando adquirir lock exclusivo (escrita) em {resource}"
@@ -55,10 +49,10 @@ class LockManager:
             "W",
             resource,
             deadlock_manager,
-            abort_transaction,
-            schedule,
+            resource,
+            deadlock_manager,
             lock_manager,
-            start_processing,
+            schedule,
         ):
             self.add_lock_attempt(transaction_id, "W", resource, success=False)
             return False
@@ -154,10 +148,6 @@ class LockManager:
         new_lock_type,
         resource,
         deadlock_manager,
-        abort_transaction,
-        schedule,
-        lock_manager,
-        start_processing,
     ):
         """Verifica se o lock que está sendo requisitado é compatível com os locks existentes"""
         existing_locks = self.locks.get(resource, [])

@@ -45,20 +45,16 @@ class TransactionManager:
                 transaction_id,
                 resource,
                 deadlock_manager,
-                self.abort_transaction,
+                self,
                 schedule,
-                lock_manager,
-                self.start_processing,
             )
         elif operation == "W":
             return lock_manager.acquire_exclusive_lock(
                 transaction_id,
                 resource,
                 deadlock_manager,
-                self.abort_transaction,
+                self,
                 schedule,
-                lock_manager,
-                self.start_processing,
             )
         elif operation == "U":
             return lock_manager.acquire_update_lock(
@@ -89,9 +85,7 @@ class TransactionManager:
         print(f"Committing transaction {transaction_id}")
         self.active_transactions.pop(transaction_id, None)
 
-    def abort_transaction(
-        self, transaction_id, schedule, lock_manager, deadlock_manager
-    ):
+    def abort_transaction(self, transaction_id, schedule):
         print(f"Aborting transaction {transaction_id}")
         self.active_transactions.pop(transaction_id, None)
 
