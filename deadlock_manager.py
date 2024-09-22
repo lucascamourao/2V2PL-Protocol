@@ -24,6 +24,7 @@ class DeadlockDetection:
             return True
         past.append(no)
         for i in prox:
+            print(f'{no}->{i}')
             if self.detect_deadlock(i, self.wait_grafo[i], past):
                 return True
         return False
