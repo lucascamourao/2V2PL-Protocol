@@ -136,6 +136,8 @@ class LockManager:
 
                 # Chama a função add_wait passando as transações em conflito
                 deadlock_manager.add_wait(existing_transaction_id, transaction_id)
+                if deadlock_manager.detect_deadlock(existing_transaction_id, deadlock_manager.wait_grafo[existing_transaction_id], []):
+                    deadlock_manager.recent_transaction()
                 return False
 
         return True

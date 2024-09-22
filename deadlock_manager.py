@@ -33,6 +33,8 @@ class DeadlockDetection:
         for transaction in self.wait_grafo.keys():
             if transaction in self.past:
                 recent = transaction
+        self.past = []
+        print(recent)
         return recent
 
 
