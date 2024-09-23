@@ -31,24 +31,24 @@ class TransactionManager:
         print(f"Processing {operation} on {resource} by {transaction_id}")
         # Adquirir o lock necessário
         if operation == 'R':
-            return lock_manager.acquire_shared_lock(transaction_id, resource, deadlock_manager, BD, self, schedule, lock_manager)
+            return lock_manager.acquire_shared_lock(transaction_id, resource_original, resource, deadlock_manager, self, schedule, lock_manager, BD)
         elif operation == 'W':
-            return lock_manager.acquire_exclusive_lock(transaction_id, resource, deadlock_manager, BD, self, schedule, lock_manager)
+            return lock_manager.acquire_exclusive_lock(transaction_id, resource_original, resource, deadlock_manager, self, schedule, lock_manager, BD)
         elif operation == 'U':
-            return lock_manager.acquire_update_lock(transaction_id, resource, deadlock_manager, BD)
+            return lock_manager.acquire_update_lock(transaction_id, resource_original, resource, deadlock_manager, self, schedule, lock_manager, BD)
         elif operation == 'C':
-            return lock_manager.acquire_certify_lock(transaction_id, resource, deadlock_manager, BD)
+            return lock_manager.acquire_certify_lock(transaction_id, resource_original, resource, deadlock_manager, self, schedule, lock_manager, BD)
         elif operation == 'IR':
-            return lock_manager.acquire_intent_read_lock(transaction_id, resource, deadlock_manager, BD)
+            return lock_manager.acquire_intent_read_lock(transaction_id, resource_original, resource, deadlock_manager, self, schedule, lock_manager, BD)
         elif operation == 'IW':
-            return lock_manager.acquire_intent_write_lock(transaction_id, resource, deadlock_manager, BD)
+            return lock_manager.acquire_intent_write_lock(transaction_id, resource_original, resource, deadlock_manager, self, schedule, lock_manager, BD)
         elif operation == 'IU':
-            return lock_manager.acquire_intent_update_lock(transaction_id, resource, deadlock_manager, BD)
+            return lock_manager.acquire_intent_update_lock(transaction_id, resource_original, resource, deadlock_manager, self, schedule, lock_manager, BD)
         elif operation == 'IC':
-            return lock_manager.acquire_intent_certify_lock(transaction_id, resource, deadlock_manager, BD)
+            return lock_manager.acquire_intent_certify_lock(transaction_id, resource_original, resource, deadlock_manager, self, schedule, lock_manager, BD)
         elif operation == 'C':
             return lock_manager.commit_transaction(transaction_id, resource, deadlock_manager, self, schedule, lock_manager, BD)
-            
+
     def commit_transaction(self, transaction_id):
         print(f"Committing transaction {transaction_id}")
         self.active_transactions.pop(transaction_id, None)

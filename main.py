@@ -2,6 +2,7 @@ from transaction_manager import TransactionManager
 from lock_manager import LockManager
 from deadlock_manager import DeadlockDetection
 from utils import create_environment
+
 # Iniciar o gerenciador de transações e locks
 transaction_manager = TransactionManager()
 lock_manager = LockManager()
