@@ -6,7 +6,7 @@ from utils import create_environment
 transaction_manager = TransactionManager()
 lock_manager = LockManager()
 deadlock_manager = DeadlockDetection()
-BD  = create_environment()
+BD = create_environment()
 
 def main():
     # Exemplo de escalonamento: T1: R(A), W(A), T2: R(B), W(B), ...
