@@ -16,12 +16,15 @@ class Objects:
         if self.id == parent_id:
             return self
         for children in self.children_tree:
-            return children.search_parent(parent_id)
+            id = children.search_parent(parent_id)
+            if id:
+                return id
 
     def all_children(self):
         all_children = []
         for children in self.children_tree:
             all_children.append(children.id)
+            print(children.id)
             all_children = all_children + children.all_children()
         return all_children
     
