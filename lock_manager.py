@@ -5,6 +5,8 @@ class LockManager:
         self.locks = {}
         # Armazena as tentativas de aquisição de locks
         self.lock_attempts = {}
+        self.locks_approved = []
+        self.transactions_waiting = [] 
         # Pega a matriz com as comparações
         self.lock_compatibility_matrix = LockCompatibilityMatrix()
 
@@ -85,6 +87,7 @@ class LockManager:
         if resource not in self.locks:
             self.locks[resource] = []
         self.locks[resource].append((transaction_id, lock_type))
+        self.locks_approved.append((transaction_id, lock_type, resource, "1"))
         print(f"Lock {lock_type} adquirido pela Transacao {transaction_id} no recurso {resource}")
         print(f"--------------------------------------------------------------------------------")
 
@@ -110,11 +113,45 @@ class LockManager:
                     deadlock_manager.apagar_grafo(new_schedule)
                     self.reset_locks()
                     transaction_manager.start_processing(new_schedule, lock_manager, deadlock_manager)
+                    lock_manager.display_locks_approved()
+                    lock_manager.display_waiting_transactions()
                     exit()
-
+                
+                self.add_waiting_transaction(transaction_id, new_lock_type, resource)
                 return False
             
         return True
+
+    def add_waiting_transaction(self, transaction_id, lock_type, resource):
+        """ Adiciona a transacao em espera a lista transactions_waiting """
+        self.transactions_waiting.append((transaction_id, lock_type, resource))
+    
+    def display_locks_approved(self):
+        """ Exibe todas as transações em espera de lock """
+        if not self.locks_approved:
+            print("Nenhuma transação aguardando lock.")
+        else:
+            print("Transações que passaram:")
+            for transaction_id, lock_type, resource, status in self.locks_approved:
+                print(f"Transacao {transaction_id} -> Tipo de lock: {lock_type} no recurso {resource} com status de {status}")
+
+    def display_locks(self):
+        """ Exibe todos os locks concedidos """
+        if not self.locks:
+            print("Nenhum lock foi adquirido.")
+        else:
+            print("Locks adquiridos:")
+            for transaction_id, lock_type, resource in self.locks:
+                print(f"Transacao {transaction_id} -> Tipo de lock: {lock_type} no recurso {resource}")
+
+    def display_waiting_transactions(self):
+        """ Exibe todas as transações em espera de lock """
+        if not self.transactions_waiting:
+            print("Nenhuma transação aguardando lock.")
+        else:
+            print("Transacoes aguardando liberação de outros bloqueios:")
+            for transaction_id, lock_type, resource in self.transactions_waiting:
+                print(f"Transacao {transaction_id} -> Tipo de lock: {lock_type} no recurso {resource}")
 
     def add_lock_attempt(self, transaction_id, lock_type, resource, success):
         """ Registra a tentativa de aquisição de um lock, com o resultado (1 para sucesso, 2 para falha) """
@@ -164,6 +201,8 @@ class LockManager:
     def reset_locks(self):
         self.locks = {}
         self.lock_attempts = {}
+        self.locks_approved = []
+        self.transactions_waiting = []
 
 class LockCompatibilityMatrix:
     def __init__(self):
