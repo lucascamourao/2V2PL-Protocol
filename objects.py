@@ -24,12 +24,15 @@ class Objects:
         all_children = []
         for children in self.children_tree:
             all_children.append(children.id)
+            print(children.id)
             all_children = all_children + children.all_children()
         return all_children
     
     def all_parents(self):
         all_parents = []
-        if self.parent_id == None:
-            return all_parents.append(self.id)
-        all_parents = self.root.search_parent(self.parent_id).all_parents() + all_parents.append(self.parent_id)
+        if self.parent_id is not None:
+            parent = self.root.search_parent(self.parent_id)
+            all_parents += parent.all_parents()  # Chama recursivamente os pais
+            all_parents.append(self.parent_id)  # Adiciona o ID do pai atual
         return all_parents
+

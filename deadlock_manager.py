@@ -38,6 +38,9 @@ class DeadlockDetection:
     def apagar_grafo(self , schedule):
         self.wait_grafo = {}
         self.start_grafo(schedule)
-
-
-# Se existir, retornar a transação a ser abortada
+    
+    def liberar_transacao(self, transacao):
+        self.wait_grafo[transacao] = []
+        for key in self.wait_grafo.keys():
+            if transacao in self.wait_grafo[key]:
+                self.wait_grafo[key].remove(transacao)
