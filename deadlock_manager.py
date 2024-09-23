@@ -18,7 +18,11 @@ class DeadlockDetection:
         self.wait_grafo[espera] = aux
         print(f"add_wait chamado: {espera} agora espera por {esperado}")
         print("----grafo depois de ser adicionado uma aresta____")
+<<<<<<< HEAD
         print(self.wait_grafo)
+=======
+        print(self.wait_grafo )
+>>>>>>> 079a1b5b741c141176864d9a7cfc862c3911cb2c
 
     def detect_deadlock(self, no, prox, past):
         if no in past:
@@ -39,10 +43,17 @@ class DeadlockDetection:
         return recent
 
     # apagar todo o grafo dentro do deadlock
+<<<<<<< HEAD
     def apagar_grafo(self, schedule):
         self.wait_grafo = {}
         self.start_grafo(schedule)
 
+=======
+    def apagar_grafo(self , schedule):
+        self.wait_grafo = {}
+        self.start_grafo(schedule)
+    
+>>>>>>> 079a1b5b741c141176864d9a7cfc862c3911cb2c
     # Libera transação de dentro do grafo ( tira o vertice )
     def liberar_transacao(self, transacao):
         self.wait_grafo[transacao] = []

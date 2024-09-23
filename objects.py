@@ -35,3 +35,4 @@ class Objects:
             all_parents += parent.all_parents()  # Chama recursivamente os pais
             all_parents.append(self.parent_id)  # Adiciona o ID do pai atual
         return all_parents
+
