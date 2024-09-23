@@ -24,7 +24,6 @@ class Objects:
         all_children = []
         for children in self.children_tree:
             all_children.append(children.id)
-            print(children.id)
             all_children = all_children + children.all_children()
         return all_children
     
