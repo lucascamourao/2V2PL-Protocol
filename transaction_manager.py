@@ -13,7 +13,7 @@ class TransactionManager:
         print(schedule)
         
         for element in schedule:
-            if element != None:
+            if element != None and element != 'C':
                 # [transaction_id, operation, resource]
                 transaction_id = element[0]
                 operation = element[1]
@@ -25,6 +25,11 @@ class TransactionManager:
                         self.process(transaction_id, "I"+operation, resource_original, parent, lock_manager, deadlock_manager, schedule, BD)
                     for children in childrens:
                         self.process(transaction_id, operation, resource_original, children, lock_manager, deadlock_manager, schedule, BD)
+            elif element == 'C':
+                transaction_id = element[0]
+                operation = element[1]
+                resource_original = element[2]
+                self.process(transaction_id, operation, resource_original, resource_original, lock_manager, deadlock_manager, schedule, BD)
 
     def process(self, transaction_id, operation, resource_original, resource, lock_manager, deadlock_manager, schedule, BD):
         # Aqui, gerencie a lógica para processar cada operação (R, W, U, C, IR, IW, IU, IC) em um recurso
@@ -46,9 +51,7 @@ class TransactionManager:
         elif operation == 'ICI':
             return lock_manager.acquire_intent_certify_lock(transaction_id, resource_original, resource, deadlock_manager, self, schedule, lock_manager, BD)
         elif operation == 'C':
-            lock_manager.display_locks_approved()
-            lock_manager.display_waiting_transactions()
-            print(" transacao com commit feita")
+            # print(" transacao com commit feita")
             return lock_manager.commit_transaction(transaction_id, resource, deadlock_manager, self, schedule, lock_manager, BD)
 
     def abort_transaction(self, transaction_id, schedule):

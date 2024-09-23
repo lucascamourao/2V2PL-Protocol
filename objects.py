@@ -10,7 +10,7 @@ class Objects:
         object.root = self
         parent = self.search_parent(parent_id)
         parent.children_tree.append(object)
-        print(f'{object_id} criado com sucesso')
+        # print(f'{object_id} criado com sucesso')
 
     def search_parent(self, parent_id):
         if self.id == parent_id:
