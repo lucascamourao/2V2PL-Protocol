@@ -9,13 +9,13 @@ class DeadlockDetection:
     def start_grafo(self, schedule):
         for transaction in schedule:
             self.wait_grafo[transaction[0]] = []
+        print(self.wait_grafo)
 
     def add_wait(self, espera, esperado):
         aux = self.wait_grafo[espera]
         if esperado not in aux:
             aux.append(esperado)
         self.wait_grafo[espera] = aux
-
         print(f"add_wait chamado: {espera} agora espera por {esperado}")
 
     def detect_deadlock(self, no, prox, past):
@@ -29,16 +29,16 @@ class DeadlockDetection:
                 return True
         return False
 
-    def apagar_grafo(self):
-        self.wait_grafo.clear()
-
     def recent_transaction(self):
         for transaction in self.wait_grafo.keys():
             if transaction in self.past:
                 recent = transaction
-        self.past = []
         print(recent)
         return recent
+
+    def apagar_grafo(self, schedule):
+        self.wait_grafo = {}
+        self.start_grafo(schedule)
 
 
 # Se existir, retornar a transação a ser abortada

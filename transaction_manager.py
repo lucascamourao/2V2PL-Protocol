@@ -14,7 +14,7 @@ class TransactionManager:
         print(schedule)
 
         for element in schedule:
-            if element != "Transação abortada":
+            if element != None:
                 # [transaction_id, operation, resource]
                 transaction_id = element[0]
                 operation = element[1]
@@ -42,19 +42,11 @@ class TransactionManager:
         # Adquirir o lock necessário
         if operation == "R":
             return lock_manager.acquire_shared_lock(
-                transaction_id,
-                resource,
-                deadlock_manager,
-                self,
-                schedule,
+                transaction_id, resource, deadlock_manager, self, schedule, lock_manager
             )
         elif operation == "W":
             return lock_manager.acquire_exclusive_lock(
-                transaction_id,
-                resource,
-                deadlock_manager,
-                self,
-                schedule,
+                transaction_id, resource, deadlock_manager, self, schedule, lock_manager
             )
         elif operation == "U":
             return lock_manager.acquire_update_lock(
@@ -91,7 +83,7 @@ class TransactionManager:
 
         for i in range(len(schedule)):
             if schedule[i][0] == transaction_id:
-                schedule[i] = "Transação abortada"
+                schedule[i] = None
 
         new_schedule = [op for op in schedule if op is not None]
 
