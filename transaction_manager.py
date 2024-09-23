@@ -46,7 +46,9 @@ class TransactionManager:
             return lock_manager.acquire_intent_update_lock(transaction_id, resource, deadlock_manager, BD)
         elif operation == 'IC':
             return lock_manager.acquire_intent_certify_lock(transaction_id, resource, deadlock_manager, BD)
-
+        elif operation == 'C':
+            return lock_manager.commit_transaction(transaction_id, resource, deadlock_manager, self, schedule, lock_manager, BD)
+            
     def commit_transaction(self, transaction_id):
         print(f"Committing transaction {transaction_id}")
         self.active_transactions.pop(transaction_id, None)
