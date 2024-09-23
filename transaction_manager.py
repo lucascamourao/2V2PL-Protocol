@@ -36,7 +36,7 @@ class TransactionManager:
             return lock_manager.acquire_exclusive_lock(transaction_id, resource_original, resource, deadlock_manager, self, schedule, lock_manager, BD)
         elif operation == 'U':
             return lock_manager.acquire_update_lock(transaction_id, resource_original, resource, deadlock_manager, self, schedule, lock_manager, BD)
-        elif operation == 'C':
+        elif operation == 'IC':
             return lock_manager.acquire_certify_lock(transaction_id, resource_original, resource, deadlock_manager, self, schedule, lock_manager, BD)
         elif operation == 'IR':
             return lock_manager.acquire_intent_read_lock(transaction_id, resource_original, resource, deadlock_manager, self, schedule, lock_manager, BD)
@@ -44,7 +44,7 @@ class TransactionManager:
             return lock_manager.acquire_intent_write_lock(transaction_id, resource_original, resource, deadlock_manager, self, schedule, lock_manager, BD)
         elif operation == 'IU':
             return lock_manager.acquire_intent_update_lock(transaction_id, resource_original, resource, deadlock_manager, self, schedule, lock_manager, BD)
-        elif operation == 'IC':
+        elif operation == 'ICI':
             return lock_manager.acquire_intent_certify_lock(transaction_id, resource_original, resource, deadlock_manager, self, schedule, lock_manager, BD)
         elif operation == 'C':
             return lock_manager.commit_transaction(transaction_id, resource, deadlock_manager, self, schedule, lock_manager, BD)
