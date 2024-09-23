@@ -122,7 +122,6 @@ class LockManager:
                     print("Recomeçando o schedule depois de abortar uma transação")
                     transaction_manager.start_processing(new_schedule, lock_manager, deadlock_manager, BD)
                     lock_manager.display_locks_approved()
-                    lock_manager.display_waiting_transactions()
                     exit()
 
                 if(resource_original == resource):
@@ -146,7 +145,8 @@ class LockManager:
         else:
             print("Transações que passaram:")
             for transaction_id, lock_type, resource, status in self.locks_approved:
-                print(f"Transacao {transaction_id} -> Tipo de lock: {lock_type} no recurso {resource} com status de {status}")
+                print(f"Transacao {transaction_id} -> Tipo de lock: {lock_type} no recurso {resource}")
+                # com status de {status}
 
     # Plotar os bloqueios que estão na espera
     def display_waiting_transactions(self):
@@ -255,6 +255,7 @@ class LockManager:
     def release_locks(self, transaction_id, deadlock_manager, transaction_manager, schedule, lock_manager, BD):
         # Libera todos os locks associados à transação
         
+        self.display_waiting_transactions()
         for element in self.transactions_waiting:
             if transaction_id == element[0]:
                 # print("Há transações esperando, liberar os locks pode não ser imediato.")
@@ -331,7 +332,6 @@ class LockManager:
                             if i[1] == 'C':
                                 transaction_manager.process(i[0], i[1], i[2], i[2], lock_manager, deadlock_manager, new_schedule, BD)
                         lock_manager.display_locks_approved()
-                        lock_manager.display_waiting_transactions()
                         exit()
                     return False
 
