@@ -6,92 +6,94 @@ class LockManager:
         # Armazena as tentativas de aquisição de locks
         self.lock_attempts = {}
         self.locks_approved = []
-        self.transactions_waiting = [] 
+        self.transactions_waiting = []
         # Pega a matriz com as comparações
         self.lock_compatibility_matrix = LockCompatibilityMatrix()
+        #sempre que um objeto especifico
 
-    def acquire_shared_lock(self, transaction_id, resource, deadlock_manager, transaction_manager, schedule, lock_manager):
+    def acquire_shared_lock(self, transaction_id, resource_original, resource, deadlock_manager, transaction_manager, schedule, lock_manager, BD):
         print(f"{transaction_id} tentando adquirir lock compartilhado (leitura) em {resource}")
-        if not self.is_lock_compatible(transaction_id, 'R', resource, deadlock_manager, transaction_manager, schedule, lock_manager):
+        if not self.is_lock_compatible(transaction_id, 'R', resource_original, resource, deadlock_manager, transaction_manager, schedule, lock_manager):
             self.add_lock_attempt(transaction_id, 'R', resource, success=False)
             return False
-        self.add_lock(transaction_id, 'R', resource)
+        self.add_lock(transaction_id, 'R', resource_original, resource)
         self.add_lock_attempt(transaction_id, 'R', resource, success=True)
         return True
 
-    def acquire_exclusive_lock(self, transaction_id, resource, deadlock_manager, transaction_manager, schedule, lock_manager):
+    def acquire_exclusive_lock(self, transaction_id, resource_original, resource, deadlock_manager, transaction_manager, schedule, lock_manager, BD):
         print(f"{transaction_id} tentando adquirir lock exclusivo (escrita) em {resource}")
-        if not self.is_lock_compatible(transaction_id, 'W', resource, deadlock_manager, transaction_manager, schedule, lock_manager):
+        if not self.is_lock_compatible(transaction_id, 'W', resource_original, resource, deadlock_manager, transaction_manager, schedule, lock_manager):
             self.add_lock_attempt(transaction_id, 'W', resource, success=False)
             return False
-        self.add_lock(transaction_id, 'W', resource)
+        self.add_lock(transaction_id, 'W', resource_original, resource)
         self.add_lock_attempt(transaction_id, 'W', resource, success=True)
         return True
 
-    def acquire_intent_read_lock(self, transaction_id, resource, deadlock_manager):
+    def acquire_intent_read_lock(self, transaction_id, resource_original, resource, deadlock_manager, transaction_manager, schedule, lock_manager, BD):
         print(f"{transaction_id} tentando adquirir lock intencional de leitura em {resource}")
-        if not self.is_lock_compatible(transaction_id, 'IR', resource, deadlock_manager):
+        if not self.is_lock_compatible(transaction_id, 'IR', resource_original, resource, deadlock_manager, transaction_manager, schedule, lock_manager):
             self.add_lock_attempt(transaction_id, 'IR', resource, success=False)
             return False
-        self.add_lock(transaction_id, 'IR', resource)
+        self.add_lock(transaction_id, 'IR', resource_original, resource)
         self.add_lock_attempt(transaction_id, 'IR', resource, success=True)
         return True
 
-    def acquire_intent_write_lock(self, transaction_id, resource, deadlock_manager):
+    def acquire_intent_write_lock(self, transaction_id, resource_original, resource, deadlock_manager, transaction_manager, schedule, lock_manager, BD):
         print(f"{transaction_id} tentando adquirir lock intencional de escrita em {resource}")
-        if not self.is_lock_compatible(transaction_id, 'IW', resource, deadlock_manager):
+        if not self.is_lock_compatible(transaction_id, 'IW', resource_original, resource, deadlock_manager, transaction_manager, schedule, lock_manager):
             self.add_lock_attempt(transaction_id, 'IW', resource, success=False)
             return False
-        self.add_lock(transaction_id, 'IW', resource)
+        self.add_lock(transaction_id, 'IW', resource_original, resource)
         self.add_lock_attempt(transaction_id, 'IW', resource, success=True)
         return True
 
-    def acquire_update_lock(self, transaction_id, resource, deadlock_manager):
+    def acquire_update_lock(self, transaction_id, resource_original, resource, deadlock_manager, transaction_manager, schedule, lock_manager, BD):
         print(f"{transaction_id} tentando adquirir lock de update em {resource}")
-        if not self.is_lock_compatible(transaction_id, 'U', resource, deadlock_manager):
+        if not self.is_lock_compatible(transaction_id, 'U', resource_original, resource, deadlock_manager, transaction_manager, schedule, lock_manager):
             self.add_lock_attempt(transaction_id, 'U', resource, success=False)
             return False
-        self.add_lock(transaction_id, 'U', resource)
+        self.add_lock(transaction_id, 'U', resource_original, resource)
         self.add_lock_attempt(transaction_id, 'U', resource, success=True)
         return True
 
-    def acquire_certify_lock(self, transaction_id, resource, deadlock_manager):
+    def acquire_certify_lock(self, transaction_id, resource_original, resource, deadlock_manager, transaction_manager, schedule, lock_manager, BD):
         print(f"{transaction_id} tentando adquirir lock de certificação em {resource}")
-        if not self.is_lock_compatible(transaction_id, 'C', resource, deadlock_manager):
+        if not self.is_lock_compatible(transaction_id, 'C', resource_original, resource, deadlock_manager, transaction_manager, schedule, lock_manager):
             self.add_lock_attempt(transaction_id, 'C', resource, success=False)
             return False
-        self.add_lock(transaction_id, 'C', resource)
+        self.add_lock(transaction_id, 'C', resource_original, resource)
         self.add_lock_attempt(transaction_id, 'C', resource, success=True)
         return True
 
-    def acquire_intent_update_lock(self, transaction_id, resource, deadlock_manager):
+    def acquire_intent_update_lock(self, transaction_id, resource_original, resource, deadlock_manager, transaction_manager, schedule, lock_manager, BD):
         print(f"{transaction_id} tentando adquirir lock intencional de update em {resource}")
-        if not self.is_lock_compatible(transaction_id, 'IU', resource, deadlock_manager):
+        if not self.is_lock_compatible(transaction_id, 'IU', resource_original, resource, deadlock_manager, transaction_manager, schedule, lock_manager):
             self.add_lock_attempt(transaction_id, 'IU', resource, success=False)
             return False
-        self.add_lock(transaction_id, 'IU', resource)
+        self.add_lock(transaction_id, 'IU', resource_original, resource)
         self.add_lock_attempt(transaction_id, 'IU', resource, success=True)
         return True
 
-    def acquire_intent_certify_lock(self, transaction_id, resource, deadlock_manager):
+    def acquire_intent_certify_lock(self, transaction_id, resource_original, resource, deadlock_manager, transaction_manager, schedule, lock_manager, BD):
         print(f"{transaction_id} tentando adquirir lock intencional de Certify em {resource}")
-        if not self.is_lock_compatible(transaction_id, 'IC', resource, deadlock_manager):
+        if not self.is_lock_compatible(transaction_id, 'IC', resource_original, resource, deadlock_manager, transaction_manager, schedule, lock_manager):
             self.add_lock_attempt(transaction_id, 'IC', resource, success=False)
             return False
-        self.add_lock(transaction_id, 'IC', resource)
+        self.add_lock(transaction_id, 'IC', resource_original, resource)
         self.add_lock_attempt(transaction_id, 'IC', resource, success=True)
         return True
 
-    def add_lock(self, transaction_id, lock_type, resource):
+    def add_lock(self, transaction_id, lock_type, resource_original, resource):
         """ Adiciona o lock ao recurso no formato (transaction_id, lock_type) """
         if resource not in self.locks:
             self.locks[resource] = []
         self.locks[resource].append((transaction_id, lock_type))
-        self.locks_approved.append((transaction_id, lock_type, resource, "1"))
+        if (resource_original == resource):
+            self.locks_approved.append([transaction_id, lock_type, resource, 'Passou'])
         print(f"Lock {lock_type} adquirido pela Transacao {transaction_id} no recurso {resource}")
         print(f"--------------------------------------------------------------------------------")
 
-    def is_lock_compatible(self, transaction_id, new_lock_type, resource, deadlock_manager, transaction_manager, schedule, lock_manager):
+    def is_lock_compatible(self, transaction_id, new_lock_type, resource_original, resource, deadlock_manager, transaction_manager, schedule, lock_manager):
         """ Verifica se o lock que está sendo requisitado é compatível com os locks existentes """
         existing_locks = self.locks.get(resource, [])
         for lock in existing_locks:
@@ -116,8 +118,10 @@ class LockManager:
                     lock_manager.display_locks_approved()
                     lock_manager.display_waiting_transactions()
                     exit()
-                
-                self.add_waiting_transaction(transaction_id, new_lock_type, resource)
+
+                if(resource_original == resource):
+                    self.add_waiting_transaction(transaction_id, new_lock_type, resource)
+                    
                 return False
             
         return True
@@ -203,6 +207,69 @@ class LockManager:
         self.lock_attempts = {}
         self.locks_approved = []
         self.transactions_waiting = []
+
+    def commit_transaction(self, transaction_id, resource, deadlock_manager, transaction_manager, schedule, lock_manager, BD):
+        print(f"Committing transaction {transaction_id}")
+        # liberar todos os bloqueios
+        self.release_locks(transaction_id)
+        self.active_transactions.pop(transaction_id, None)
+        
+        for element in self.transactions_waiting:
+            for aux in self.locks_approved:
+                # [transaction_id, operation, resource]
+                transaction_id = element[0]
+                operation = element[1]
+                resource_original = element[2]
+                transaction_id2 = aux[0]
+                operation2 = aux[1]
+                resource_original2 = aux[2]
+                status = element[3]
+                if self.is_compatible(operation, operation2) and (status == "Passou"):
+                    if transaction_manager.process(transaction_id, operation, resource_original, resource_original, lock_manager, deadlock_manager, schedule, BD):
+                        childrens = BD.search_parent(resource_original).all_children()
+                        parents = BD.search_parent(resource_original).all_parents()
+                        for parent in parents:
+                            transaction_manager.process(transaction_id, "I"+operation, resource_original, parent, lock_manager, deadlock_manager, schedule, BD)
+                        for children in childrens:
+                            transaction_manager.process(transaction_id, operation, resource_original, children, lock_manager, deadlock_manager, schedule, BD)
+
+
+    def release_locks(self, transaction_id):
+        # Libera todos os locks associados à transação
+        
+        for element in self.transactions_waiting:
+            # self.transactions_waiting =!= []
+            if transaction_id == element[0]:
+                print("Há transações esperando, liberar os locks pode não ser imediato.")
+                self.add_waiting_transaction(transaction_id, 'C', '')
+            
+        else:
+            # Itera sobre os recursos bloqueados e remove os locks da transação
+            for resource, locks in list(self.locks.items()): 
+                # Filtra apenas os locks que pertencem à transação atual
+                new_locks = [lock for lock in locks if lock[0] != transaction_id]
+                
+                # Se havia locks da transação atual, liberá-los
+                if len(new_locks) != len(locks):
+                    print(f"Liberando locks da Transação {transaction_id} no recurso {resource}")
+                    
+                    # Atualiza os locks do recurso com a lista filtrada
+                    if new_locks:
+                        self.locks[resource] = new_locks
+                    else:
+                        del self.locks[resource]  # Remove o recurso se não houver mais locks
+
+                    # Atualiza o status em locks_approved
+                    for lock in locks:
+                        if lock[0] == transaction_id:
+                            lock_type = lock[1]
+                            # Registra a liberação no histórico de locks aprovados
+                            #self.locks_approved -> (transaction_id, lock_type, resource, "Liberado")
+                            for i in self.locks_approved:
+                                if (i[0] == transaction_id) and (i[1] == lock_type) and (resource[2]):
+                                    i[4] = "Liberado"
+
+            print(f"Todos os locks da Transação {transaction_id} foram liberados.")
 
 class LockCompatibilityMatrix:
     def __init__(self):

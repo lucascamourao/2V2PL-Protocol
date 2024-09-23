@@ -11,18 +11,18 @@ BD = create_environment()
 def main():
     # Exemplo de escalonamento: T1: R(A), W(A), T2: R(B), W(B), ...
     schedule = [
-        ['T1', 'R', 'A'], 
-        ['T1', 'W', 'A'],
-        ['T2', 'R', 'B'], 
-        ['T2', 'W', 'B'], 
-        ['T3', 'R', 'A'], 
-        ['T3', 'W', 'B']
+        ['T1', 'R', 'T1'], 
+        ['T1', 'W', 'T1'],
+        ['T2', 'R', 'P1'], 
+        ['T2', 'W', 'P1'], 
+        ['T3', 'R', 'R1'], 
+        ['T3', 'W', 'R1']
     ]
 
     deadlock_manager.start_grafo(schedule)
 
     # Processar o escalonamento
-    transaction_manager.start_processing(schedule, lock_manager, deadlock_manager)
+    transaction_manager.start_processing(schedule, lock_manager, deadlock_manager, BD)
 
 if __name__ == '__main__':
     main()
