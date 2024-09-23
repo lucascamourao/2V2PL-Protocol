@@ -145,8 +145,11 @@ class LockManager:
         else:
             print("Transações que passaram:")
             for transaction_id, lock_type, resource, status in self.locks_approved:
-                print(f"Transacao {transaction_id} -> Tipo de lock: {lock_type} no recurso {resource}")
-                # com status de {status}
+                if lock_type != 'C':
+                    print(f"Transacao {transaction_id} -> Tipo de lock: {lock_type}")
+                    # com status de no recurso {resource} com status de {status}
+                else:
+                    print(f"Transacao {transaction_id} -> Tipo de lock: {lock_type}")
 
     # Plotar os bloqueios que estão na espera
     def display_waiting_transactions(self):
@@ -212,11 +215,10 @@ class LockManager:
         self.transactions_waiting = []
 
     # Função que é chamada na operação de Commit
-    def commit_transaction(self, transaction_id, resource, deadlock_manager, transaction_manager, schedule, lock_manager, BD):
-        print(f"Committing transaction {transaction_id}")
-
+    def commit_transaction(self, transaction_id_1, resource, deadlock_manager, transaction_manager, schedule, lock_manager, BD):
+        # print(f"Committing transaction {transaction_id_1}")
         # Checa se é possivel e libera todos os bloqueios
-        self.release_locks(transaction_id, deadlock_manager, transaction_manager, schedule, lock_manager, BD)
+        self.release_locks(transaction_id_1, deadlock_manager, transaction_manager, schedule, lock_manager, BD)
         
         # Com alguns bloqueios liberados, checamos os bloqueios da lista de espera podem acontecer
         for element in self.transactions_waiting:
@@ -227,7 +229,7 @@ class LockManager:
             # Apago o bloqueio da lista de espera, para que não ocorra duplicação
             self.transactions_waiting = [
                 el for el in self.transactions_waiting
-                if not (el[0] == transaction_id and el[1] == operation and el[2] == resource_original)
+                if not (el[0] == transaction_id and el[1] == operation and el[2] == resource)
             ]
 
             # Checa se o bloqueio da lista de espera pode acontecer
@@ -251,11 +253,17 @@ class LockManager:
                 elif (status=="Passou") and [transaction_id, operation, resource_original] not in self.transactions_waiting and [transaction_id, operation, resource_original, 'Passou'] not in self.locks_approved:
                     self.add_waiting_transaction(transaction_id, operation, resource_original)
                     break
+
+        already_committed = any(k[0] == transaction_id_1 and k[1] == 'C' for k in self.locks_approved)
+        # Só adicionar se ainda não houver commit
+        if not already_committed:
+            for k in self.locks_approved:
+                if k[0] == transaction_id_1 and k[3] == 'Liberado' and k[1] != 'C':
+                    self.locks_approved.append([transaction_id_1, 'C', '', ''])
+                    break
     
     def release_locks(self, transaction_id, deadlock_manager, transaction_manager, schedule, lock_manager, BD):
         # Libera todos os locks associados à transação
-        
-        self.display_waiting_transactions()
         for element in self.transactions_waiting:
             if transaction_id == element[0]:
                 # print("Há transações esperando, liberar os locks pode não ser imediato.")
@@ -300,7 +308,7 @@ class LockManager:
                 has_write_lock.append([transaction_id, lock_type , approved_resource, status])
 
         if not has_write_lock:
-            print(f"A transação {transaction_id}")
+            # print(f"A transação {transaction_id}")
             return True
 
         # Olha se tem bloqueio de leitura de uma transação diferente.
@@ -318,7 +326,7 @@ class LockManager:
                 # Se o bloqueio de escrita for bloqueado, adiciona o commit na espera
                 # Se ocorrer deadlock, abortar transação mais recente e recomeça o schedule
                 if approved_transaction_id != write_transaction_id and approved_resource == write_resource and lock_type == 'R' and status == 'Passou':
-                    print(f"A transação {transaction_id} não pode converter o bloqueio de escrita em leitura porque há um bloqueio de leitura no recurso {write_resource}.")
+                    # print(f"A transação {transaction_id} não pode converter o bloqueio de escrita em leitura porque há um bloqueio de leitura no recurso {write_resource}.")
                     self.add_waiting_transaction(transaction_id, 'C', '')
                     deadlock_manager.add_wait(approved_transaction_id, write_transaction_id)
                     if deadlock_manager.detect_deadlock(approved_transaction_id, deadlock_manager.wait_grafo[approved_transaction_id], []):

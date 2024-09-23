@@ -51,9 +51,7 @@ class TransactionManager:
         elif operation == 'ICI':
             return lock_manager.acquire_intent_certify_lock(transaction_id, resource_original, resource, deadlock_manager, self, schedule, lock_manager, BD)
         elif operation == 'C':
-            print(" transacao com commit feita")
-            lock_manager.display_locks_approved()
-            lock_manager.display_waiting_transactions()
+            # print(" transacao com commit feita")
             return lock_manager.commit_transaction(transaction_id, resource, deadlock_manager, self, schedule, lock_manager, BD)
 
     def abort_transaction(self, transaction_id, schedule):
