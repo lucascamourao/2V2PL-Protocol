@@ -86,7 +86,8 @@ class LockManager:
             self.locks[resource] = []
         self.locks[resource].append((transaction_id, lock_type))
         if (resource_original == resource):
-            self.locks_approved.append([transaction_id, lock_type, resource, 'Passou'])
+            if [transaction_id, lock_type, resource_original, 'Passou'] not in  self.locks_approved:
+                self.locks_approved.append([transaction_id, lock_type, resource, 'Passou'])
 
     def is_lock_compatible(self, transaction_id, new_lock_type, resource_original, resource, deadlock_manager, transaction_manager, schedule, lock_manager, BD):
         """ Verifica se o lock que está sendo requisitado é compatível com os locks existentes """
@@ -113,7 +114,8 @@ class LockManager:
                     exit()
 
                 if(resource_original == resource):
-                    self.add_waiting_transaction(transaction_id, new_lock_type, resource)
+                    if [transaction_id, new_lock_type, resource] not in self.transactions_waiting:
+                        self.add_waiting_transaction(transaction_id, new_lock_type, resource)
                     
                 return False
             
@@ -210,11 +212,14 @@ class LockManager:
             transaction_id = element[0]
             operation = element[1]
             resource_original = element[2]
+            print("---------------------------------")
+            print(self.transactions_waiting)
             self.transactions_waiting = [
                 el for el in self.transactions_waiting
                 if not (el[0] == transaction_id and el[1] == operation and el[2] == resource_original)
             ]
-
+            print(self.transactions_waiting)
+            print("---------------------------------")
             print("transacoes que estão aguardando", resource_original)
 
             for aux in self.locks_approved:
@@ -223,11 +228,11 @@ class LockManager:
                 operation2 = aux[1]
                 resource_original2 = aux[2]
                 status = aux[3]
-                if self.lock_compatibility_matrix.is_compatible(operation, operation2) and (status == "Passou") and transaction_id != transaction_id2:
-                    lock_manager.display_locks_approved()
-                    lock_manager.display_waiting_transactions()
+                lock_manager.display_locks_approved()
+                lock_manager.display_waiting_transactions()
+                if (status == "Liberado") and transaction_id != transaction_id2 and [transaction_id, operation, resource_original, 'Passou'] not in  self.locks_approved:
                     if operation == 'C':
-                        transaction_manager.process(transaction_id, operation, resource_original, children, lock_manager, deadlock_manager, schedule, BD)
+                        transaction_manager.process(transaction_id, operation, resource_original, resource_original2, lock_manager, deadlock_manager, schedule, BD)
 
                     elif transaction_manager.process(transaction_id, operation, resource_original, resource_original, lock_manager, deadlock_manager, schedule, BD):
                         childrens = BD.search_parent(resource_original).all_children()
@@ -236,7 +241,9 @@ class LockManager:
                             transaction_manager.process(transaction_id, "I"+operation, resource_original, parent, lock_manager, deadlock_manager, schedule, BD)
                         for children in childrens:
                             transaction_manager.process(transaction_id, operation, resource_original, children, lock_manager, deadlock_manager, schedule, BD)
-
+                elif (status=="Passou") and [transaction_id, operation, resource_original] not in self.transactions_waiting and [transaction_id, operation, resource_original, 'Passou'] not in self.locks_approved:
+                    self.add_waiting_transaction(transaction_id, operation, resource_original)
+                    break
     def release_locks(self, transaction_id, deadlock_manager):
         # Libera todos os locks associados à transação
         
@@ -246,36 +253,33 @@ class LockManager:
                 print("Há transações esperando, liberar os locks pode não ser imediato.")
                 self.add_waiting_transaction(transaction_id, 'C', '')
                 break
-            else:
-                # Itera sobre os recursos bloqueados e remove os locks da transação
-                for resource, locks in list(self.locks.items()): 
-                    # Filtra apenas os locks que pertencem à transação atual
-                    new_locks = [lock for lock in locks if lock[0] != transaction_id]
-                    
-                    # Se havia locks da transação atual, liberá-los
-                    if len(new_locks) != len(locks):
-                        print(f"Liberando locks da Transação {transaction_id} no recurso {resource}")
-                        
-                        # Atualiza os locks do recurso com a lista filtrada
-                        if new_locks:
-                            self.locks[resource] = new_locks
-                        else:
-                            del self.locks[resource]  # Remove o recurso se não houver mais locks
 
-                        # Atualiza o status em locks_approved
-                        for lock in locks:
-                            if lock[0] == transaction_id:
-                                lock_type = lock[1]
-                                locks
-                                # Registra a liberação no histórico de locks aprovados
-                                #self.locks_approved -> (transaction_id, lock_type, resource, "Liberado")
-                                for i in self.locks_approved:
-                                    if (i[0] == transaction_id) and (i[1] == lock_type) and (i[2] == resource):
-                                        i[3] = "Liberado"
+        for resource, locks in list(self.locks.items()): 
+            # Filtra apenas os locks que pertencem à transação atual
+            new_locks = [lock for lock in locks if lock[0] != transaction_id]
+            # Se havia locks da transação atual, liberá-los
+            if len(new_locks) != len(locks):
+                print(f"Liberando locks da Transação {transaction_id} no recurso {resource}")
+                
+                # Atualiza os locks do recurso com a lista filtrada
+                if new_locks:
+                    self.locks[resource] = new_locks
+                else:
+                    del self.locks[resource]  # Remove o recurso se não houver mais locks
 
-                deadlock_manager.liberar_transacao(transaction_id)
-                print(self.locks)
-                print(f"Todos os locks da Transação {transaction_id} foram liberados.")
+                # Atualiza o status em locks_approved
+                for lock in locks:
+                    if lock[0] == transaction_id:
+                        lock_type = lock[1]
+                        # Registra a liberação no histórico de locks aprovados
+                        #self.locks_approved -> (transaction_id, lock_type, resource, "Liberado")
+                        for i in self.locks_approved:
+                            if (i[0] == transaction_id) and (i[1] == lock_type) and (i[2] == resource):
+                                i[3] = "Liberado"
+
+        deadlock_manager.liberar_transacao(transaction_id)
+        print(self.locks)
+        print(f"Todos os locks da Transação {transaction_id} foram liberados.")
 
 class LockCompatibilityMatrix:
     def __init__(self):
